@@ -51,6 +51,7 @@ export const GET_BANK_INFO_ERROR = "GET_BANK_INFO_ERROR";
 export const POST_RANDOM_QUESTION_ANSWER_REQUEST = "POST_RANDOM_QUESTION_ANSWER_REQUEST";
 export const POST_RANDOM_QUESTION_ANSWER_SUCCESS = "POST_RANDOM_QUESTION_ANSWER_SUCCESS";
 export const POST_RANDOM_QUESTION_ANSWER_ERROR = "POST_RANDOM_QUESTION_ANSWER_ERROR";
+export const POST_RANDOM_QUESTION_ANSWER_RESET = "POST_RANDOM_QUESTION_ANSWER_RESET";
 
 export const RESET_BLOCK_PROFILE = "RESET_BLOCK_PROFILE";
 
@@ -392,6 +393,7 @@ export const ProfileReducer = (state = initialState, action) => {
               ...state,
               postRandomQuestionAnswer: { ...state.postRandomQuestionAnswer, loading: true },
             };
+           
           case POST_RANDOM_QUESTION_ANSWER_SUCCESS:
             return {
               ...state,
@@ -403,6 +405,12 @@ export const ProfileReducer = (state = initialState, action) => {
                 error: "",
               },
             };
+            
+            case POST_RANDOM_QUESTION_ANSWER_RESET:
+              return {
+                ...state,
+                postRandomQuestionAnswer: { ...state.postRandomQuestionAnswer, loading: false,success: false, },
+              };
           case POST_RANDOM_QUESTION_ANSWER_ERROR:
             return {
               ...state,

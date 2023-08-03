@@ -72,7 +72,7 @@ const Signup = () => {
     };
 
     initGoogleAPI();
-    if (success) history('/expertmainpage')
+    // if (success) history('/expertmainpage')
   }, [success]);
 
   const handleGoogleFailure = (error) => { };
@@ -138,6 +138,7 @@ const Signup = () => {
           payload: payload,
         })
       );
+       history('/expertmainpage')
     } else {
       toast.error("Password and Confirm Password are not equal");
     }

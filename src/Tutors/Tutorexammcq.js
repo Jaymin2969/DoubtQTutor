@@ -7,6 +7,7 @@ import {
   postRandomQuestionAnswer as postRandomQuestionAnswerApi,
 } from "../redux/actions/ProfileAction";
 import ExamTimer from "./ExamTimer";
+import { POST_RANDOM_QUESTION_ANSWER_RESET } from "../redux/reducers/ProfileReducer";
 
 const Tutorexammcq = () => {
   useEffect(() => {
@@ -376,6 +377,7 @@ const [optionA, optionB, optionC, optionD] = mcqoptions || [];
                   className="btn-close"
                   data-bs-dismiss="modal"
                   aria-label="Close"
+                  onClick={()=>dispatch({type:POST_RANDOM_QUESTION_ANSWER_RESET})}
                 />
               </div>
               <div className="modal-body">

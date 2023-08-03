@@ -83,6 +83,7 @@ const App = () => {
   useEffect(() => {
     dispatch(getQuestionType());
   }, []);
+  console.log('authauthauth',auth)
   return (
     <React.Fragment>
       {/* <Router> */}

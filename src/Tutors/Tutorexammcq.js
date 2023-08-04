@@ -30,7 +30,6 @@ const Tutorexammcq = () => {
     (state) => state.profile
   );
   const [subjectAttempt, setSubjectAttempt] = useState({});
-  console.log("postRandomQuestionAnswer.data", postRandomQuestionAnswer.data);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [questions, setQuestions] = useState(getRandomQuestion?.data || []);
   const fetchSubjectData = async () => {
@@ -43,7 +42,7 @@ const Tutorexammcq = () => {
       toast.error(error.response.data.error);
     }
   };
-  console.log("@@@subjectArray",subjectAttempt,subject)
+
   useEffect(() => {
     if (getRandomQuestion?.data?.length) {
       setQuestions(getRandomQuestion?.data);
@@ -57,9 +56,8 @@ const Tutorexammcq = () => {
     } else {
       history("/");
     }
-
   }, []);
-
+  
   const onSkip = () => {
     const nextQuestionIndex = currentQuestion + 1;
     setCurrentQuestion(nextQuestionIndex);
@@ -70,7 +68,7 @@ const Tutorexammcq = () => {
     timerRef.current.resetTimer(nextSeconds);
   };
   const onSubmitClick = () => {
-    if (currentQuestion === questions.length - 1&&subject) {
+    if (currentQuestion === questions.length - 1 && subject) {
       dispatch(postRandomQuestionAnswerApi({ subject, questions }));
     } else {
       if(questions){
@@ -85,9 +83,11 @@ const Tutorexammcq = () => {
       }
     }
   };
-  const onReattemptClick = () => {
-      dispatch(setReAttemptData({ subject, attempt:subjectAttempt[0]?.isAttempt }));
-      history('/')
+  const onReattemptClick = (attempt)=>() => {
+      dispatch(setReAttemptData({ subject, attempt }));
+      // attempt :subjectAttempt[0]?.isAttempt
+      // history('/')
+     return window.location.reload()
   };
 
   const onOptionClick = (answer = "") => {
@@ -234,13 +234,13 @@ const [optionA, optionB, optionC, optionD] = mcqoptions || [];
                             <div className="row mt--20 pt--20 border-top">
                               <div className="col-lg-6 col-4 text-start">
                                 {!postRandomQuestionAnswer.loading &&  questions?.length>currentQuestion+1 &&(
-                                  <Link
+                                  <div
                                     className="rbt-btn btn-border btn-sm mr--20"
                                     onClick={onSkip}
                                     // to="/mcqtest"
                                   >
                                     <span className="btn-text">Skip</span>
-                                  </Link>
+                                  </div>
                                 )}
                               </div>
                               <div className="col-lg-6 col-8 text-end">
@@ -296,13 +296,13 @@ const [optionA, optionB, optionC, optionD] = mcqoptions || [];
                             <div className="row mt--20 pt--20 border-top">
                               <div className="col-lg-6 col-4 text-start">
                                 {!postRandomQuestionAnswer.loading && (
-                                  <Link
+                                  <div
                                     className="rbt-btn btn-border btn-sm mr--20"
                                     // to="/mcqtest"
                                     onClick={onSkip}
                                   >
                                     <span className="btn-text">Skip</span>
-                                  </Link>
+                                  </div>
                                 )}
                               </div>
                               <div className="col-lg-6 col-8 text-end">
@@ -456,7 +456,7 @@ const [optionA, optionB, optionC, optionD] = mcqoptions || [];
 :<>
                     <button
                       className="rbt-btn btn-gradient hover-icon-reverse btn-sm mr--10"
-                      onClick={onReattemptClick}
+                      onClick={onReattemptClick(1)}
                     >
                       <span  className="icon-reverse-wrapper">
                         <span className="btn-text">ReAttempt</span>
@@ -471,6 +471,7 @@ const [optionA, optionB, optionC, optionD] = mcqoptions || [];
                     <Link
                       to="/mcqtest"
                       className="rbt-btn btn-gradient hover-icon-reverse btn-sm"
+                      onClick={onReattemptClick(2)}
                     >
                       <span className="icon-reverse-wrapper">
                         <span className="btn-text">cancel</span>

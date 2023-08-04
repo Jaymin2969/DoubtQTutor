@@ -30,7 +30,9 @@ import {
   POST_RANDOM_QUESTION_ANSWER_ERROR,
   POST_RANDOM_QUESTION_ANSWER_REQUEST,
   POST_RANDOM_QUESTION_ANSWER_RESET,
-  POST_RANDOM_QUESTION_ANSWER_SUCCESS,
+  POST_RANDOM_QUESTION_ANSWER_SUCCESS, POST_RE_ATTEMPT_RANDOM_QUESTION_ANSWER_ERROR,
+  POST_RE_ATTEMPT_RANDOM_QUESTION_ANSWER_REQUEST,
+  POST_RE_ATTEMPT_RANDOM_QUESTION_ANSWER_SUCCESS,
   SET_BANK_DETAIL_ERROR,
   SET_BANK_DETAIL_REQUEST,
   SET_BANK_DETAIL_SUCCESS,
@@ -310,6 +312,12 @@ async function bankInfoApi(payload) {
     token: getAuthToken(),
   });
 }
+async function reattemptAnswers(payload) {
+  return await Axios.post("/tutorexamattempt", {
+    ...payload,
+    token: getAuthToken(),
+  });
+}
 
 function* handleBankInfo({ payload }) {
   try {
@@ -323,6 +331,24 @@ function* handleBankInfo({ payload }) {
   } catch (error) {
     yield put({
       type: GET_BANK_INFO_ERROR,
+      error: getSimplifiedError(error),
+    });
+  }
+}
+
+function* handleReattemptAnswer({payload}){
+  try {
+    const response = yield call(reattemptAnswers, payload);
+    console.log("response")
+    if (response) {
+      yield put({
+        type: POST_RE_ATTEMPT_RANDOM_QUESTION_ANSWER_SUCCESS,
+        response,
+      });
+    }
+  } catch (error) {
+    yield put({
+      type: POST_RE_ATTEMPT_RANDOM_QUESTION_ANSWER_ERROR,
       error: getSimplifiedError(error),
     });
   }
@@ -342,4 +368,5 @@ export default all([
   takeLatest(GET_PERSONAL_INFO_REQUEST, handlePersonalInfo),
   takeLatest(GET_PROFESSIONAL_INFO_REQUEST, handleProfessionalInfo),
   takeLatest(GET_BANK_INFO_REQUEST, handleBankInfo),
+  takeLatest(POST_RE_ATTEMPT_RANDOM_QUESTION_ANSWER_REQUEST, handleReattemptAnswer),
 ]);

@@ -54,7 +54,7 @@ const Bankdetails = () => {
       })
     }
   }, [bankInfo])
-
+  console.log("@@@bankDetails",bankDetails)
   const onFormChange = (e) => {
     const { name, value } = e.target;
     setBankDetails({ ...bankDetails, [name]: value });
@@ -62,6 +62,7 @@ const Bankdetails = () => {
 
   const handleBankDetailSubmit = (e) => {
     e.preventDefault();
+    console.log("@@@@bankDetails",bankDetails)
     dispatch(
       setBankDetailsReq({
         ...bankDetails,
@@ -335,6 +336,7 @@ const Bankdetails = () => {
                                       <option value="ubi">United Bank of India</option>
                                       <option value="vijaya">Vijaya Bank</option>
                                       <option value="yes">Yes Bank Ltd</option>
+                                      <option value="hdfc">HDFC Bank Ltd.</option>
                                     </Form.Select>
                                   </div>
                                 </div>

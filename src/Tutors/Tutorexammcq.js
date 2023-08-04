@@ -4,10 +4,16 @@ import PulseLoader from "react-spinners/PulseLoader";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import {
   getRandomQuestionQuiz,
-  postRandomQuestionAnswer as postRandomQuestionAnswerApi,
+  postRandomQuestionAnswer as postRandomQuestionAnswerApi, setReAttemptData,
 } from "../redux/actions/ProfileAction";
 import ExamTimer from "./ExamTimer";
 import { POST_RANDOM_QUESTION_ANSWER_RESET } from "../redux/reducers/ProfileReducer";
+import axios from "axios";
+import {getAuthToken} from "../utils/helper";
+import {toast} from "react-toastify";
+
+const baseURL = process.env.REACT_APP_APIS_BASE_URL;
+
 
 const Tutorexammcq = () => {
   useEffect(() => {
@@ -23,10 +29,21 @@ const Tutorexammcq = () => {
   const { getRandomQuestion, postRandomQuestionAnswer } = useSelector(
     (state) => state.profile
   );
+  const [subjectAttempt, setSubjectAttempt] = useState({});
   console.log("postRandomQuestionAnswer.data", postRandomQuestionAnswer.data);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [questions, setQuestions] = useState(getRandomQuestion?.data || []);
-
+  const fetchSubjectData = async () => {
+    try {
+      const response = await axios.post(`${baseURL}/tutor/getsubjectattempt`, {
+        token: getAuthToken(),
+      });
+      setSubjectAttempt(response.data.tut_sub.filter(sub=>sub?.subject===subject));
+    } catch (error) {
+      toast.error(error.response.data.error);
+    }
+  };
+  console.log("@@@subjectArray",subjectAttempt,subject)
   useEffect(() => {
     if (getRandomQuestion?.data?.length) {
       setQuestions(getRandomQuestion?.data);
@@ -36,9 +53,11 @@ const Tutorexammcq = () => {
   useEffect(() => {
     if (subject) {
       dispatch(getRandomQuestionQuiz({ subject }));
+      fetchSubjectData()
     } else {
       history("/");
     }
+
   }, []);
 
   const onSkip = () => {
@@ -51,9 +70,11 @@ const Tutorexammcq = () => {
     timerRef.current.resetTimer(nextSeconds);
   };
   const onSubmitClick = () => {
-    if (currentQuestion === questions.length - 1) {
+    if (currentQuestion === questions.length - 1&&subject) {
       dispatch(postRandomQuestionAnswerApi({ subject, questions }));
     } else {
+      if(questions){
+
       const nextQuestionIndex = currentQuestion + 1;
       setCurrentQuestion(nextQuestionIndex);
       const nextSeconds =
@@ -61,7 +82,12 @@ const Tutorexammcq = () => {
           ? 60
           : 300;
       timerRef.current.resetTimer(nextSeconds);
+      }
     }
+  };
+  const onReattemptClick = () => {
+      dispatch(setReAttemptData({ subject, attempt:subjectAttempt[0]?.isAttempt }));
+      history('/')
   };
 
   const onOptionClick = (answer = "") => {
@@ -428,11 +454,11 @@ const [optionA, optionB, optionC, optionD] = mcqoptions || [];
                       </span>
                     </Link>
 :<>
-                    <Link
-                      to="/"
+                    <button
                       className="rbt-btn btn-gradient hover-icon-reverse btn-sm mr--10"
+                      onClick={onReattemptClick}
                     >
-                      <span className="icon-reverse-wrapper">
+                      <span  className="icon-reverse-wrapper">
                         <span className="btn-text">ReAttempt</span>
                         <span className="btn-icon">
                           <i className="feather-arrow-right" />
@@ -441,7 +467,7 @@ const [optionA, optionB, optionC, optionD] = mcqoptions || [];
                           <i className="feather-arrow-right" />
                         </span>
                       </span>
-                    </Link>
+                    </button>
                     <Link
                       to="/mcqtest"
                       className="rbt-btn btn-gradient hover-icon-reverse btn-sm"

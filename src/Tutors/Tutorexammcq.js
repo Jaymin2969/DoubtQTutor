@@ -9,8 +9,8 @@ import {
 import ExamTimer from "./ExamTimer";
 import { POST_RANDOM_QUESTION_ANSWER_RESET } from "../redux/reducers/ProfileReducer";
 import axios from "axios";
-import {getAuthToken} from "../utils/helper";
-import {toast} from "react-toastify";
+import { getAuthToken } from "../utils/helper";
+import { toast } from "react-toastify";
 
 const baseURL = process.env.REACT_APP_APIS_BASE_URL;
 
@@ -37,7 +37,7 @@ const Tutorexammcq = () => {
       const response = await axios.post(`${baseURL}/tutor/getsubjectattempt`, {
         token: getAuthToken(),
       });
-      setSubjectAttempt(response.data.tut_sub.filter(sub=>sub?.subject===subject));
+      setSubjectAttempt(response.data.tut_sub.filter(sub => sub?.subject === subject));
     } catch (error) {
       toast.error(error.response.data.error);
     }
@@ -57,7 +57,7 @@ const Tutorexammcq = () => {
       history("/");
     }
   }, []);
-  
+
   const onSkip = () => {
     const nextQuestionIndex = currentQuestion + 1;
     setCurrentQuestion(nextQuestionIndex);
@@ -71,23 +71,25 @@ const Tutorexammcq = () => {
     if (currentQuestion === questions.length - 1 && subject) {
       dispatch(postRandomQuestionAnswerApi({ subject, questions }));
     } else {
-      if(questions){
+      if (questions) {
 
-      const nextQuestionIndex = currentQuestion + 1;
-      setCurrentQuestion(nextQuestionIndex);
-      const nextSeconds =
-        questions[nextQuestionIndex]["questionType"] === "MCQ - Final answer"
-          ? 60
-          : 300;
-      timerRef.current.resetTimer(nextSeconds);
+        const nextQuestionIndex = currentQuestion + 1;
+        setCurrentQuestion(nextQuestionIndex);
+        const nextSeconds =
+          questions[nextQuestionIndex]["questionType"] === "MCQ - Final answer"
+            ? 60
+            : 300;
+        timerRef.current.resetTimer(nextSeconds);
       }
     }
   };
-  const onReattemptClick = (attempt)=>() => {
-      dispatch(setReAttemptData({ subject, attempt }));
-      // attempt :subjectAttempt[0]?.isAttempt
-      // history('/')
-     return window.location.reload()
+  const onReattemptClick = (attempt) => () => {
+    dispatch(setReAttemptData({ subject, attempt }));
+    // attempt :subjectAttempt[0]?.isAttempt
+    // history('/')
+    setTimeout(() => {
+      return window.location.reload()
+    }, 2000);
   };
 
   const onOptionClick = (answer = "") => {
@@ -97,15 +99,17 @@ const Tutorexammcq = () => {
   };
 
   const currentQuestionDetail = questions[currentQuestion] || {};
-const {
-  mcqoptions = [],
-  questionType,
-  questionSubject,
-  answer,
-} = currentQuestionDetail || {};
-const [optionA, optionB, optionC, optionD] = mcqoptions || [];
+  const {
+    mcqoptions = [],
+    questionType,
+    questionSubject,
+    answer,
+  } = currentQuestionDetail || {};
+  const [optionA, optionB, optionC, optionD] = mcqoptions || [];
 
-
+  const isFailedInExam = [
+    "you are failed exam", "you are failed exam please attempt second time"
+  ].includes(postRandomQuestionAnswer?.data?.message)
   return (
     <>
       <main className="rbt-main-wrapper">
@@ -137,7 +141,7 @@ const [optionA, optionB, optionC, optionD] = mcqoptions || [];
                               <div className="col-md-12 col-lg-12 mb--20">
                                 <h5>Question</h5>
                                 <div className="p--20 rbt-border radius-6 bg-primary-opacity">
-                                  {`(${currentQuestion+1})`} Question <div dangerouslySetInnerHTML={{__html:currentQuestionDetail?.question}}/>
+                                  {`(${currentQuestion + 1})`} Question <div dangerouslySetInnerHTML={{ __html: currentQuestionDetail?.question }} />
                                   <br />
                                   {/* <br /> a) {optionA} <br /> b) {optionB} <br />
                                   c) {optionC} <br /> d) {optionD} */}
@@ -233,11 +237,11 @@ const [optionA, optionB, optionC, optionD] = mcqoptions || [];
                             </div>
                             <div className="row mt--20 pt--20 border-top">
                               <div className="col-lg-6 col-4 text-start">
-                                {!postRandomQuestionAnswer.loading &&  questions?.length>currentQuestion+1 &&(
+                                {!postRandomQuestionAnswer.loading && questions?.length > currentQuestion + 1 && (
                                   <div
                                     className="rbt-btn btn-border btn-sm mr--20"
                                     onClick={onSkip}
-                                    // to="/mcqtest"
+                                  // to="/mcqtest"
                                   >
                                     <span className="btn-text">Skip</span>
                                   </div>
@@ -273,7 +277,7 @@ const [optionA, optionB, optionC, optionD] = mcqoptions || [];
                                 <h5>Question</h5>
                                 <div className="p--20 rbt-border radius-6 bg-primary-opacity">
                                   {/* Question <div dangerouslySetInnerHTML={{__html:currentQuestionDetail?.question}}/> */}
-                                  {`(${currentQuestion+1})`} Question <div dangerouslySetInnerHTML={{__html:currentQuestionDetail?.question}}/>
+                                  {`(${currentQuestion + 1})`} Question <div dangerouslySetInnerHTML={{ __html: currentQuestionDetail?.question }} />
                                 </div>
                               </div>
                               <div className="col-md-12 col-lg-12 mb--20">
@@ -403,87 +407,94 @@ const [optionA, optionB, optionC, optionD] = mcqoptions || [];
                   className="btn-close"
                   data-bs-dismiss="modal"
                   aria-label="Close"
-                  onClick={()=>dispatch({type:POST_RANDOM_QUESTION_ANSWER_RESET})}
+                  onClick={() => dispatch({ type: POST_RANDOM_QUESTION_ANSWER_RESET })}
                 />
               </div>
               <div className="modal-body">
                 <div className="text-center">
-                  {postRandomQuestionAnswer?.data?.message ===
-                  "you are failed exam please attempt second time" ? (
-                    <i className="h1 feather-x-circle text-danger" />
-                  ) : (
-                    <i className="h1 feather-check-circle text-success" />
-                  )}{" "}
+                  {
+                    isFailedInExam ? (
+                      <i className="h1 feather-x-circle text-danger" />
+                    ) : (
+                      <i className="h1 feather-check-circle text-success" />
+                    )}{" "}
                   <h4 className="mt--20 mb--20">
-                    {postRandomQuestionAnswer?.data?.message ===
-                    "you are failed exam please attempt second time"
+                    {isFailedInExam
                       ? "Oops"
                       : "Congratulations"}{" "}
                   </h4>
                   <h6 className="mb--20">
-                    {postRandomQuestionAnswer?.data?.message ===
-                    "you are failed exam please attempt second time" ? (
+                    {"you are failed exam" === postRandomQuestionAnswer?.data?.message ?
                       <span>
-                        You are failed exam
+                        You have failed this subject test.
                         <br />
-                        Please attempt second time!{" "}
-                      </span>
-                    ) : (
-                      <span>
-                        You have passed this subject test
+                        You are not eligible for this subject!
+                        <br />
+
                         <br />
                         Please proceed further!{" "}
                       </span>
-                    )}
+                      : isFailedInExam ? (
+                        <span>
+                          You are failed exam
+                          <br />
+                          Please attempt second time!{" "}
+                        </span>
+                      ) : (
+                        <span>
+                          You have passed this subject test
+                          <br />
+                          Please proceed further!{" "}
+                        </span>
+                      )}
                   </h6>
                   <div className="d-flex justify-content-center">
-                  {postRandomQuestionAnswer?.data?.message !==
-                    "you are failed exam please attempt second time"?
-                    <Link
-                      to="/"
-                      className="rbt-btn btn-gradient hover-icon-reverse btn-sm"
-                    >
-                      <span className="icon-reverse-wrapper">
-                        <span className="btn-text">Ok</span>
-                        <span className="btn-icon">
-                          <i className="feather-arrow-right" />
+                    {"you are failed exam" === postRandomQuestionAnswer?.data?.message ||!isFailedInExam ?
+                      <Link
+                        to="/mcqtest"
+                        className="rbt-btn btn-gradient hover-icon-reverse btn-sm"
+                      >
+                        <span className="icon-reverse-wrapper">
+                          <span className="btn-text">Ok</span>
+                          <span className="btn-icon">
+                            <i className="feather-arrow-right" />
+                          </span>
+                          <span className="btn-icon">
+                            <i className="feather-arrow-right" />
+                          </span>
                         </span>
-                        <span className="btn-icon">
-                          <i className="feather-arrow-right" />
-                        </span>
-                      </span>
-                    </Link>
-:<>
-                    <button
-                      className="rbt-btn btn-gradient hover-icon-reverse btn-sm mr--10"
-                      onClick={onReattemptClick(1)}
-                    >
-                      <span  className="icon-reverse-wrapper">
-                        <span className="btn-text">ReAttempt</span>
-                        <span className="btn-icon">
-                          <i className="feather-arrow-right" />
-                        </span>
-                        <span className="btn-icon">
-                          <i className="feather-arrow-right" />
-                        </span>
-                      </span>
-                    </button>
-                    <Link
-                      to="/mcqtest"
-                      className="rbt-btn btn-gradient hover-icon-reverse btn-sm"
-                      onClick={onReattemptClick(2)}
-                    >
-                      <span className="icon-reverse-wrapper">
-                        <span className="btn-text">cancel</span>
-                        <span className="btn-icon">
-                          <i className="feather-arrow-right" />
-                        </span>
-                        <span className="btn-icon">
-                          <i className="feather-arrow-right" />
-                        </span>
-                      </span>
-                    </Link>
-                    </>}
+                      </Link>
+                      : <>
+                        <button
+                          className="rbt-btn btn-gradient hover-icon-reverse btn-sm mr--10"
+                          onClick={onReattemptClick(1)}
+                        >
+                          <span className="icon-reverse-wrapper">
+                            <span className="btn-text">ReAttempt</span>
+                            <span className="btn-icon">
+                              <i className="feather-arrow-right" />
+                            </span>
+                            <span className="btn-icon">
+                              <i className="feather-arrow-right" />
+                            </span>
+                          </span>
+                        </button>
+                        <Link
+                          to="/mcqtest"
+                          className="rbt-btn btn-gradient hover-icon-reverse btn-sm"
+                          onClick={onReattemptClick(2)}
+                        >
+                          <span className="icon-reverse-wrapper">
+                            <span className="btn-text">cancel</span>
+                            <span className="btn-icon">
+                              <i className="feather-arrow-right" />
+                            </span>
+                            <span className="btn-icon">
+                              <i className="feather-arrow-right" />
+                            </span>
+                          </span>
+                        </Link>
+                      </>}
                   </div>
                 </div>
               </div>

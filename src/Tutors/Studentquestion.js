@@ -2,7 +2,7 @@ import moment from "moment";
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { getExpertQuestion, resetQuestionBlock } from "../redux/actions/QuestionAction";
+import {getExpertQuestion, getQuestionList, resetQuestionBlock, startAnswering} from "../redux/actions/QuestionAction";
 
 const Studentquestion = () => {
 
@@ -34,6 +34,12 @@ const Studentquestion = () => {
 
   const minutes = Math.floor(duration.asMinutes());
   const seconds = Math.floor(duration.asSeconds()) - minutes * 60;
+
+  useEffect(()=>{
+    if(minutes<=0&&seconds<=0){
+      history(`/unsolvedquestions`)
+    }
+  },[minutes,seconds])
 
   const answerNowLink = () => {
     
@@ -122,7 +128,7 @@ const Studentquestion = () => {
                           <div className="col-lg-6 text-end">
                             <p className="mb--0">Time to decide :</p>
                             <h5 id="time-countdown">
-                              {minutes === 0 && seconds === 0 ? (
+                              {minutes <= 0 && seconds <= 0 ? (
                                 <p>skip...</p>
                               ) : (
                                 <p>

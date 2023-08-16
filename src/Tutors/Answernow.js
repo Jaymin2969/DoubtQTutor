@@ -145,7 +145,7 @@ const Answernow = () => {
                           <div className="col-lg-6 text-end">
                             <p className="mb--0">Give your answer within :</p>
                             <h5 id="time-countdown">
-                              {minutes === 0 && seconds === 0 ? (
+                              {minutes <= 0 && seconds <= 0 ? (
                                 <p>skip...</p>
                               ) : (
                                 <p>

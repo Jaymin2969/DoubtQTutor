@@ -165,7 +165,7 @@ const Matchfollowingquestion = () => {
                         <div className="row">
                           <div className="col-md-12 col-lg-12 mb--20">
                             <h5>Question</h5>
-                            <div style={{ userSelect: "none" }} className="p--20 rbt-border radius-6 bg-primary-opacity">
+                            <div className="p--20 rbt-border radius-6 bg-primary-opacity">
                               {question?.question}
                               <br />
                               <div className="my-4">
@@ -187,16 +187,16 @@ const Matchfollowingquestion = () => {
                                   }
                                 )}
                               </div>
-                              <Button
-                                variant="primary"
-                                onClick={() =>
-                                  handleOCR(
-                                    question?.questionPhoto[0]
-                                  )
-                                }
+                              {question?.questionPhoto?.length?<Button
+                                  variant="primary"
+                                  onClick={() =>
+                                      handleOCR(
+                                          question?.questionPhoto[0]
+                                      )
+                                  }
                               >
                                 Perform OCR
-                              </Button>
+                              </Button>:null}
 
                               <Row className="mt-5">
                                 <Col xs={12} md={8} lg={12}>
@@ -343,7 +343,7 @@ const Matchfollowingquestion = () => {
                                 className="w-100 mt--10 text-center"
                                 id="time-countdown"
                               >
-                                {minutes === 0 && seconds === 0 ? (
+                                {minutes <= 0 && seconds <= 0 ? (
                                   <p>skip...</p>
                                 ) : (
                                   <p>
@@ -370,7 +370,7 @@ const Matchfollowingquestion = () => {
                                       <span>Question type</span>
                                     </Link>
                                     <small className="badge color-primary">
-                                      MCQ
+                                      {question?.questionType}
                                     </small>
                                   </li>
                                   <li>

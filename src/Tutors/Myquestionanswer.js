@@ -154,9 +154,9 @@ const Myquestionanswer = () => {
                                       }
                                     )} 
                                 </div>
-                                <Button variant="primary" onClick={() => handleOCR(questionPhoto[0])}>
+                                {questionPhoto?.length?<Button variant="primary" onClick={() => handleOCR(questionPhoto[0])}>
                                   Perform OCR
-                                </Button>
+                                </Button>:null}
 
                                 <Row className="mt-5">
                                   <Col xs={12} md={8} lg={12}>

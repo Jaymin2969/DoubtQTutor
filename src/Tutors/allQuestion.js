@@ -22,7 +22,7 @@ const ReadMore = ({ children }) => {
 
   return (
     <p className="Answer">
-      {isReadMore ? text.slice(0, 150) : text}
+      {isReadMore ? text?.slice(0, 150) : text}
       <span
         onClick={toggleReadMore}
         className="read-or-hide"
@@ -199,7 +199,7 @@ const navigate =useNavigate();
                                         </span>
                                         <h6 className="mb--0">
                                           {q.question.length === 50
-          ? q.question.slice(0, 50) + "..."
+          ? q.question?.slice(0, 50) + "..."
           : q.question}
                                           
                                         </h6><small>{q.questionSubject}</small>

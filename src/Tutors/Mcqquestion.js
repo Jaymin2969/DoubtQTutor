@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import { Col, Row, Button, Modal } from "react-bootstrap";
 import Tesseract from "tesseract.js";
+import ReactQuill from "react-quill";
 
 const Mcqquestion = () => {
 
@@ -112,7 +113,7 @@ const Mcqquestion = () => {
     setShow(true);
     setImageSrc(url);
   };
-
+  console.log("@@@question",question)
   return (
     <>
       <main className="rbt-main-wrapper">
@@ -134,7 +135,7 @@ const Mcqquestion = () => {
                   <div className="col-lg-9">
                     <div className="rbt-dashboard-content bg-color-white rbt-shadow-box rbt-border mb--30 p--20">
                       <div className="content">
-                        <div style={{ userSelect: "none" }} className="row">
+                        <div className="row">
                           <div className="col-md-12 col-lg-12 mb--20">
                             <h5>Question</h5>
                             <div className="p--20 rbt-border radius-6 bg-primary-opacity">
@@ -159,16 +160,16 @@ const Mcqquestion = () => {
                                   }
                                 )}
                               </div>
-                              <Button
-                                variant="primary"
-                                onClick={() =>
-                                  handleOCR(
-                                    question?.questionPhoto[0]
-                                  )
-                                }
+                              {question?.questionPhoto?.length?<Button
+                                  variant="primary"
+                                  onClick={() =>
+                                      handleOCR(
+                                          question?.questionPhoto[0]
+                                      )
+                                  }
                               >
                                 Perform OCR
-                              </Button>
+                              </Button>:null}
 
                               <Row className="mt-5">
                                 <Col xs={12} md={8} lg={12}>
@@ -267,16 +268,40 @@ const Mcqquestion = () => {
                               </div>
                             </div>
                           </div>
-                          {question?.questionType.includes("exp") && (
-                            <div className="col-md-12 col-lg-12 mb--20">
-                              <h5>Explanation</h5>
-                              <textarea
-                                onChange={(e) => {
-                                  setExplanation(e.target.value);
-                                }}
-                                className="p--20 rbt-border radius-6 bg-secondary-opacity"
-                              ></textarea>
-                            </div>
+                          {question?.questionType.toLowerCase().includes("exp") && (
+                              <div className="col-md-12 col-lg-12 mb--20">
+                                <h4>Explanation</h4>
+                                <ReactQuill
+                                    modules={{
+                                      toolbar: {
+                                        container: [
+                                          [
+                                            { header: [1, 2, 3, 4, 5, 6] },
+                                            { font: [] },
+                                          ],
+                                          [{ size: [] }],
+                                          [{ color: [] }, { background: [] }],
+                                          [
+                                            "bold",
+                                            "italic",
+                                            "underline",
+                                            "strike",
+                                            "blockquote",
+                                          ],
+                                          [{ align: [] }],
+                                          [{ list: "ordered" }, { list: "bullet" }],
+                                          ["link", "image", "video"],
+                                          ["clean"],
+                                          ["code-block"],
+                                        ],
+                                      },
+                                    }}
+                                    theme="snow"
+                                    value={explanation}
+                                    onChange={setExplanation}
+                                    placeholder="Type here....."
+                                />
+                              </div>
                           )}
                         </div>
                         <div className="row mt--20 pt--20 border-top">
@@ -333,7 +358,7 @@ const Mcqquestion = () => {
                                 className="w-100 mt--10 text-center"
                                 id="time-countdown"
                               >
-                                {minutes === 0 && seconds === 0 ? (
+                                {minutes <= 0 && seconds <= 0 ? (
                                   <p>skip...</p>
                                 ) : (
                                   <p>
@@ -360,7 +385,7 @@ const Mcqquestion = () => {
                                       <span>Question type</span>
                                     </Link>
                                     <small className="badge color-primary">
-                                      MCQ
+                                      {question?.questionType}
                                     </small>
                                   </li>
                                   <li>

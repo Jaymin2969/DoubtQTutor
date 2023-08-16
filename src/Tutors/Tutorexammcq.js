@@ -137,7 +137,7 @@ const Tutorexammcq = () => {
                       <div className="col-lg-9">
                         <div className="rbt-dashboard-content bg-color-white rbt-shadow-box rbt-border mb--30 p--20">
                           <div className="content">
-                            <div style={{ userSelect: "none" }} className="row">
+                            <div className="row">
                               <div className="col-md-12 col-lg-12 mb--20">
                                 <h5>Question</h5>
                                 <div className="p--20 rbt-border radius-6 bg-primary-opacity">
@@ -272,7 +272,7 @@ const Tutorexammcq = () => {
                       <div className="col-lg-9">
                         <div className="rbt-dashboard-content bg-color-white rbt-shadow-box rbt-border mb--30 p--20">
                           <div className="content">
-                            <div style={{ userSelect: "none" }} className="row">
+                            <div className="row">
                               <div className="col-md-12 col-lg-12 mb--20">
                                 <h5>Question</h5>
                                 <div className="p--20 rbt-border radius-6 bg-primary-opacity">
